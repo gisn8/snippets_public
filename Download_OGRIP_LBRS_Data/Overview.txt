@@ -1,0 +1,25 @@
+SCRIPT GOALS
+To download the most recent specified OGRIP LBRS data for available Ohio counties for use within a geopackage database
+and/or shapefiles reprojected into a common projection.
+A windowed interface is not provided with the intent this is to be run in the background on a schedule.
+
+Source website: http://gis3.oit.ohio.gov/geodatadownload/lbrs.aspx
+Source link format: http://gis3.oit.ohio.gov/LBRS/_downloads/HAR_CL.zip
+
+OVERVIEW
+First checks if projection files or original raw files only are requested. If so, only downloads those with no further
+action taken.
+Checks for existing local geopackage(gpkg) database where this data is stored. If one does not exist, creates a new
+one.
+If needed, download and reproject a county boundaries layer into the gpkg from ODOT and create a table listing all 
+counties and the archive date of the downloaded LBRS data. 
+Download a list of layer types from a list of counties from available OGRIP LBRS layers, reproject to a common
+projection, and put them in a statewide geopackage with the option to also have a subset of reprojected shapefiles.
+
+PREREQUISITES
+- GDAL
+- Python 3.6+
+Windows users: It is recommended to download OSGeo4W network installer from https://trac.osgeo.org/osgeo4w/.
+Using the installer, you can get GDAL which also comes with Python 3.
+You will then need to launch this using an environment setting script. A py3_env.bat script should have been available
+along with this file.
