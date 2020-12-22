@@ -761,11 +761,11 @@ else:
 	get_data()
 
 	# To check if all items in a list of elements are present in a master list: all(item in mlist for item in elist)
-	if use_arch_db > 1 and len(geom_mismatch_list) <1 and len(empty_tables_list) < 1 and (all(item in anticipated_omissions for item in omission_list) or len(omission_list) < 1):
+	if use_arch_db > 0 and len(geom_mismatch_list) <1 and len(empty_tables_list) < 1 and (all(item in anticipated_omissions for item in omission_list) or len(omission_list) < 1):
 		xfer_data(src=f'{db_ws_loc}/{db}', dest=f'{db_arch_loc}/{db}')
 		xfer_data(src=f'{db_ws_loc}/SHPs', dest=f'{db_arch_loc}/SHPs')
 		clean_workspace()
-	elif use_arch_db == 1:
+	elif use_arch_db > 0:
 		print('Update incomplete. Transfer to archive halted.')
 
 print('')
