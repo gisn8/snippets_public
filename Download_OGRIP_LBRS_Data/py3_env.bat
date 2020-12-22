@@ -5,10 +5,9 @@ REM Python OSGeo Environment and Program Launcher for Windows
 REM Or wherever OSGeo4W is installed
 SET ROOT=C:\OSGeo4W64
 
-REM %1 if we want to make this the default program to open all Python scripts in windows. However, will change all the icons unless otherwise modified.
-REM Otherwise, replace %1 with file.py if this and the target file share the folder or with the full file path (C:\...\file.py) if it doesn't.
-REM Will automatically check for pyw and py versions, so just use .py extension.
-SET PROGNAME=%1
+REM Change the PROGNAME variable to %1 if you want to use this to make this the default program to open all Python scripts in Windows.
+REM As is, this script works when this and the target file share the folder, otherwise replace with the full file path ("C:\...\file.py").
+SET PROGNAME="download_ogrip_LBRS_layers.py"
 
 if exist CALL "%ROOT%\bin\o4w_env.bat" (
 	CALL "%ROOT%\bin\o4w_env.bat"
