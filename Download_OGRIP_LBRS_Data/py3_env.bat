@@ -6,7 +6,7 @@ REM Or wherever OSGeo4W is installed
 SET ROOT=C:\OSGeo4W64
 
 REM %1 if we want to make this the default program to open all Python scripts in windows. However, will change all the icons unless otherwise modified.
-REM Otherwise, file.py or file path (C:\...\file.py) needed if this file does not share folder with file.py.
+REM Otherwise, replace %1 with file.py if this and the target file share the folder or with the full file path (C:\...\file.py) if it doesn't.
 REM Will automatically check for pyw and py versions, so just use .py extension.
 SET PROGNAME=%1
 
