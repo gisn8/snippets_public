@@ -21,5 +21,5 @@ PREREQUISITES
 - Python 3.6+
 Windows users: It is recommended to download OSGeo4W network installer from https://trac.osgeo.org/osgeo4w/.
 Using the installer, you can get GDAL which also comes with Python 3.
-You will then need to launch this using an environment setting script. A py3_env.bat script should have been available
+You will then need to launch the python script using a python environment setting script. A py3_env.bat script should have been available
 along with this file.
