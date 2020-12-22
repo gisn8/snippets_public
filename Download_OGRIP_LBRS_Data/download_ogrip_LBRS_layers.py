@@ -25,6 +25,12 @@
 # along with this file.
 
 
+
+
+#################
+#    IMPORTS    #
+#################
+
 import os
 import sys
 import subprocess
@@ -37,7 +43,7 @@ import pathlib
 # but the language between the two do not seem to be shared and I haven't the time right now to dig out the equities
 # to reduce it down to just one library.  So we're using both until then. :/
 import requests
-from urllib import requests
+from urllib import request
 
 from datetime import datetime
 from zipfile import ZipFile
@@ -50,9 +56,9 @@ frameinfo = getframeinfo(currentframe())
 
 
 
-#################################
-#	SCRIPT BEHAVIOR VARIABLES	#
-#################################
+###################################
+#    SCRIPT BEHAVIOR VARIABLES    #
+###################################
 
 # 0 = No
 # 1 = Yes
@@ -109,9 +115,9 @@ limit_features = 0
 
 
 
-#############################
-#	LOCAL FILE VARIABLES	#
-#############################
+##############################
+#    LOCAL FILE VARIABLES    #
+##############################
 
 # As GeoPackage does not handle large operations well over network, this uses the speed of a local (SSD or flash
 # ideally) drive workspace location (db_ws_loc) for the initial download and operations before copying over to a network
@@ -142,14 +148,15 @@ driver = ogr.GetDriverByName("GPKG")
 
 
 
-#############################
-#	SOURCE FILE VARIABLES	#
-#############################
+###############################
+#    SOURCE FILE VARIABLES    #
+###############################
 
 # All Ohio counties. Modifying this variable is not advised.
 all_counties = ['ADA', 'ALL', 'ASD', 'ATB', 'ATH', 'AUG', 'BEL', 'BRO', 'BUT', 'CAR', 'CHP', 'CLA', 'CLE', 'CLI', 'COL', 'COS', 'CRA', 'CUY', 'DAR', 'DEF', 'DEL', 'ERI', 'FAI', 'FAY', 'FRA', 'FUL', 'GAL', 'GEA', 'GRE', 'GUE', 'HAM', 'HAN', 'HAR', 'HAS', 'HEN', 'HIG', 'HOC', 'HOL', 'HUR', 'JAC', 'JEF', 'KNO', 'LAK', 'LAW', 'LIC', 'LOG', 'LOR', 'LUC', 'MAD', 'MAH', 'MAR', 'MED', 'MEG', 'MER', 'MIA', 'MOE', 'MOT', 'MRG', 'MRW', 'MUS', 'NOB', 'OTT', 'PAU', 'PER', 'PIC', 'PIK', 'POR', 'PRE', 'PUT', 'RIC', 'ROS', 'SAN', 'SCI', 'SEN', 'SHE', 'STA', 'SUM', 'TRU', 'TUS', 'UNI', 'VAN', 'VIN', 'WAR', 'WAS', 'WAY', 'WIL', 'WOO', 'WYA']
 
 # Modify line below in the listing style as used above to narrow to only counties of interest.
+# county_list = all_counties
 county_list = all_counties
 
 # List the counties you want projection-converted shapefiles for. Typically your own and/or surrounding counties.
@@ -163,17 +170,16 @@ layer_types = ['ADDS', 'CL']
 
 
 
-#################################################
-#	SPATIAL REFERENCE SYSTEM (SRS) VARIABLES	#
-#################################################
+##################################################
+#    SPATIAL REFERENCE SYSTEM (SRS) VARIABLES    #
+##################################################
 
 # Target Spatial Reference System. Desired projection in EPSG coordinate reference system. THIS IS THE ONLY SRS VARIABLE
 # YOU'LL NEED TO MODIFY IF NEEDED.
 t_srs = '3734'
 
 
-
-# !!! DO NOT MODIFY VARIABLES BELOW !!!
+# VARIABLES BELOW SHOULD NOT NEED TO BE MODIFIED.
 
 # Default CRS is EPSG:32123. However, exceptions should be listed here to be converted.
 crs3734 = ['AUG_CL','CAR_CL', 'CUY_CL', 'DEL_CL','FUL_CL', 'HAS_CL', 'HEN_CL', 'HOL_CL', 'KNO_CL', 'MAH_CL', 'RIC_CL', 'TUS_CL']
@@ -181,6 +187,13 @@ crs3735 = ['BUT_CL', 'CLA_CL', 'CLE_CL', 'CLI_CL', 'FAI_CL', 'FRA_CL', 'GRE_CL',
 # I think these two have an error that they are actually supposed to have been 32123 N half, but they were converted to
 # 32122 S half and assigned 32123 by mistake.
 crs32122 = ['HAR_CL', 'POR_CL']
+
+
+
+
+#########################
+#    REFERENCE LISTS    #
+#########################
 
 # The following omissions are anticipated: BEL, GEA, HAM, MED, UNI, WAR. If download failures happen beyond these,
 # additional messages are shown at the end.
@@ -194,11 +207,18 @@ geom_mismatch_list = []
 missing_src_list = []
 
 
+
+
+###################
+#    FUNCTIONS    #
+###################
+
 # Produces message with error code
-def errorcatch(e):
-	template = "Exception: {0}\nArguments: {1!r}"
+def errorcatch(e, lineno='0'):
+	template = "Exception: {0}\nLine: {lineno}\nArguments: {1!r}"
 	message = template.format(type(e).__name__, e.args)
-	print(message)
+	# print(message)
+	print(f"Exception: {type(e).__name__}\nLine: {lineno}\nArguments: {e.args}")
 
 
 # May run first if just looking for prj files, but otherwise will download raw files as needed.
@@ -318,8 +338,7 @@ def get_odot_counties_layer():
 	except Exception as e:
 		print(f'ODOT Counties layer dowload failed.')
 		omission_list.append(f'odot.county')
-		print(f'Line No.: {getframeinfo(currentframe()).lineno}')
-		errorcatch(e)
+		errorcatch(e, {getframeinfo(currentframe()).lineno})
 
 
 # Cycles through the county_list and layer_types and manages the downloads and file manipulations.
@@ -364,9 +383,9 @@ def get_data():
 						else:
 							spatial_check(county, layer_type, layer_name)
 					except Exception as e:
-						print(f"Import for {layer_name} failed. Line No.: {getframeinfo(currentframe()).lineno}")
-						errorcatch(e)
+						print(f"Import for {layer_name} failed.")
 						omission_list.append(layer_name)
+						errorcatch(e, {getframeinfo(currentframe()).lineno})
 
 
 					if (county in shp_counties) * (layer_name not in empty_tables_list) * (layer_name not in geom_mismatch_list) == 1:
@@ -436,7 +455,7 @@ def get_url_date(url, layer_name):
 							del lyr_dat_dict[info.filename]
 	except Exception as e:
 		print(f'Error getting url dates.')
-		errorcatch(e)
+		errorcatch(e, {getframeinfo(currentframe()).lineno})
 	return lyr_dat_dict
 
 
@@ -477,9 +496,9 @@ def check_date(county,layer_type, shp_date):
 			return True
 	
 	except Exception as e:
-		print(f"Import for {county}_{layer_type} failed. Line No.: {getframeinfo(currentframe()).lineno}")
-		errorcatch(e)
+		print(f"Import for {county}_{layer_type} failed.")
 		omission_list.append(county + '_' + layer_type)
+		errorcatch(e, {getframeinfo(currentframe()).lineno})
 		return False
 
 
@@ -541,8 +560,8 @@ def run_sql(lineno, sql=None, layer_name=None):
 		except AttributeError:
 			pass
 		except Exception as e:
-			print(f'Error running SQL. Source Line: {lineno}')
-			errorcatch(e)
+			print(f'Error running SQL.')
+			errorcatch(e, {getframeinfo(currentframe()).lineno})
 			print('Retrying')
 			run_sql(lineno, sql=sql)
 
@@ -553,8 +572,8 @@ def run_sql(lineno, sql=None, layer_name=None):
 			feat = output.GetNextFeature()
 			val = feat.GetField(0)
 		except Exception as e:
-			print(f'SQL output has no returns. Source Line: {lineno}')
-			errorcatch(e)
+			print(f'SQL output has no returns.')
+			errorcatch(e, {getframeinfo(currentframe()).lineno})
 	
 	try:
 		file = driver.Open(filename, 0)
@@ -562,8 +581,10 @@ def run_sql(lineno, sql=None, layer_name=None):
 		if lyr != None:
 			fc = lyr.GetFeatureCount()
 	except Exception as e:
+		print("Feature count not found, but is not always applicable.")
+		errorcatch(e, {getframeinfo(currentframe()).lineno})
 		pass
-		# print(f'SQL returns no feature count. Source Line: {lineno}; Exception: {e}')
+		
 
 	# fc = output.GetFeatureCount() or 0
 	print(f'layer_name: {layer_name}; val: {val}')
