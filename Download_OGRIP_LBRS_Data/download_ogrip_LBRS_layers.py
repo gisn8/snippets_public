@@ -201,7 +201,7 @@ anticipated_omissions = ['BEL_ADDS', 'BEL_CL', 'GEA_ADDS', 'GEA_CL', 'HAM_ADDS',
 
 # Python note: To check if all items in a list of elements are present in a master list: all(item in mlist for item in elist)
 omission_list = []
-updated_list = []
+updates_list = []
 empty_tables_list = []
 geom_mismatch_list = []
 missing_src_list = []
@@ -486,7 +486,8 @@ def check_date(county,layer_type, shp_date):
 				print(f'{layer_name} up to date.')
 			return False
 		else:
-			# 3b. If different, 
+			# 3b. If different,
+			updates_list.append(f'{layer_name}')
 			# 3b1. update the _package_date table 
 			print('Updating archive date.')
 			sql = f"UPDATE shp_dates SET \"{layer_type}_shp_date\" = '{shp_date}' WHERE \"COUNTY_CD\"='{county}';"
@@ -770,8 +771,12 @@ else:
 
 print('')
 
+print('Updates were found for the following: %s' % updates_list)
+				      
 if len(omission_list) > 0:
 	print('The following layers failed: %s' % omission_list)
+
+print('Failures for the following were anticipated: %s' % anticipated_omissions)
 
 if len(empty_tables_list) > 0:
 	print('The following layers returned empty: %s' % empty_tables_list)
