@@ -11,18 +11,22 @@
 # action taken.
 # Checks for existing local geopackage(gpkg) database where this data is stored. If one does not exist, creates a new
 # one.
-# If needed, download and reproject a county boundaries layer into the gpkg from ODOT and create a table listing all 
+# If needed, downloads and reprojects a county boundaries layer into the gpkg from ODOT and creates a table listing all 
 # counties and the archive date of the downloaded LBRS data. 
-# Download a list of layer types from a list of counties from available OGRIP LBRS layers, reproject to a common
-# projection, and put them in a statewide geopackage with the option to also have a subset of reprojected shapefiles.
+# Downloads a list of layer types from a list of counties from available OGRIP LBRS layers, reprojects to a common
+# projection, and puts them in a statewide geopackage with the option to also have a subset of reprojected shapefiles.
 
 # PREREQUISITES
-# GDAL
-# Python 3.6+
+# - GDAL
+# - Python 3.6+
 # Windows users: It is recommended to download OSGeo4W network installer from https://trac.osgeo.org/osgeo4w/.
 # Using the installer, you can get GDAL which also comes with Python 3.
-# You will then need to launch this using an environment setting script. A py3_env.bat script should have been available
-# along with this file.
+# The Windows_py3_env_and_launch.bat needs to be in the same folder with Download_OGRIP_LBRS_Layers.py. 
+# Windows_py3_env_and_launch.bat
+# sets the environment settings for Python3 and runs the Download_OGRIP_LBRS_Layers.py; trying to run the Python script
+# on its own with the proper system settings and prerequisites will result in failure.
+
+# Please read the comments within each script file for more information and to set the variables as you need them.
 
 
 
